@@ -6,6 +6,7 @@ const _config = {
     mongoUrl: process.env.MONGO_URL,
     frontenPort: process.env.FRONTEND_PORT,
     geminikey: process.env.GEMINI_API_KEY,
+    redisUrl: process.env.REDIS_URL,
 }
 
 export const config = Object.freeze(_config);

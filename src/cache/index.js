@@ -1,11 +1,9 @@
 import { createClient } from "redis";
+import { config } from "../config/config.js";
 
-const rfedisUrl = `redis://:${process.env.REDIS_PASSWORD || ""}@${
-  process.env.REDIS_HOST || "127.0.0.1"
-}:${process.env.REDIS_PORT || 6379}`;
-
-
-const client = createClient({ url: rfedisUrl });
+const client = createClient({
+  url: config.redisUrl,
+});
 
 let isConnected = false;
 client.on("connect", () => console.log("Redis client connected to the server"));
