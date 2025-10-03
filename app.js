@@ -9,7 +9,7 @@ import chatRouter from "./src/routes/chat.routes.js";
 const app = express();
 
 app.use(cors({
-  origin: config.frontenPort || "http://localhost:5173",
+  origin: config.frontendPort || "http://localhost:5173",
 }));
 app.use(express.json({ limit: "600kb" }));
 app.use(express.urlencoded({ extended: true }));

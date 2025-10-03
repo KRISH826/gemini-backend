@@ -4,7 +4,7 @@ conf();
 const _config = {
     port: process.env.BACKEND_PORT,
     mongoUrl: process.env.MONGO_URL,
-    frontenPort: process.env.FRONTEND_PORT,
+    frontendPort: process.env.FRONTEND_PORT,
     geminikey: process.env.GEMINI_API_KEY,
     redisUrl: process.env.REDIS_URL,
 }
