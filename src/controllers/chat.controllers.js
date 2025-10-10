@@ -57,18 +57,22 @@ export const createNewChat = async (req, res) => {
 
         const chat = new Chat({
             title,
-            messages: []
+            messages: [
+                {
+                    role: "user",
+                    content: message.trim(),
+                    timestamp: new Date()
+                }
+            ]
         });
 
         await chat.save();
-
-        // Invalidate chat list cache
         await deleteCache("chats");
 
         const chatData = {
             _id: chat._id,
             title: chat.title,
-            messages: []
+            messages: chat.messages,
         };
 
         return successResponse(res, "Chat created successfully", { chat: chatData });
@@ -184,7 +188,7 @@ export const sendMessage = async (req, res) => {
 export const sendMessageStream = async (req, res) => {
     try {
         const { chatId } = req.params;
-        const { message } = req.body;
+        const { message, isFirstMessage } = req.body;
 
         if (!message || message.trim() === "") {
             return errorResponse(res, "Message is required", 400);
@@ -195,7 +199,6 @@ export const sendMessageStream = async (req, res) => {
             return errorResponse(res, "Chat not found", 404);
         }
 
-        // Set SSE headers
         res.writeHead(200, {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
@@ -204,11 +207,14 @@ export const sendMessageStream = async (req, res) => {
             'Access-Control-Allow-Headers': 'Cache-Control, Content-Type',
         });
 
-        chat.messages.push({
-            role: "user",
-            content: message.trim(),
-            timestamp: new Date()
-        });
+        // ✅ First message hai toh user message skip karo
+        if (!isFirstMessage) {
+            chat.messages.push({
+                role: "user",
+                content: message.trim(),
+                timestamp: new Date()
+            });
+        }
 
         let fullAiResponse = '';
 
@@ -227,13 +233,11 @@ export const sendMessageStream = async (req, res) => {
             chat.lastActivity = new Date();
             await chat.save();
 
-            // Invalidate caches
             await Promise.all([
                 deleteCache(`messages:single:${chatId}`),
                 deleteCache("chats")
             ]);
 
-            // Send completion signal
             res.write(`data: ${JSON.stringify({
                 done: true,
                 fullMessage: fullAiResponse,
