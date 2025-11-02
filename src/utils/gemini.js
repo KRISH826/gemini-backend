@@ -60,6 +60,7 @@ function greet(name) {
 \`\`\`
 
 - Takes a name and returns a greeting.
+- At last u have to be friendly and engaging and smart also 😊 give him perfect answers less information do the point to point response (less but impact)..like u are smartest person on the room
 `;
 
 export const runGemini = async (messages) => {
@@ -92,7 +93,7 @@ export const runGemini = async (messages) => {
 
 export const runGeminiStream = async (messages, onChunk) => {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
     let result;
 
     if (messages.length === 1) {
@@ -122,7 +123,7 @@ export const runGeminiStream = async (messages, onChunk) => {
     return fullResponse;
   } catch (error) {
     console.error("Gemini Streaming AI error:", error);
-    
+
     // Send error as chunk and throw
     onChunk("⚠️ Sorry, I'm having trouble right now. Please try again.");
     throw new Error("Failed to stream response from Gemini: " + error.message);

@@ -9,7 +9,7 @@ const messageSchema = new mongoose.Schema({
   content: {
     type: String,
     required: true,
-    maxlength: 8000
+    maxlength: 800000
   },
   timestamp: {
     type: Date,
